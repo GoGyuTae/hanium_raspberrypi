@@ -1,0 +1,524 @@
+[
+    {
+        "id": "ccf1c715.256028",
+        "type": "tab",
+        "label": "플로우 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "a55377b4.7fab48",
+        "type": "inject",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "7d8d6e32.2637f"
+            ]
+        ]
+    },
+    {
+        "id": "7d8d6e32.2637f",
+        "type": "rpi-dht22",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "topic": "rpi-dht22",
+        "dht": 22,
+        "pintype": "0",
+        "pin": "17",
+        "x": 360,
+        "y": 220,
+        "wires": [
+            [
+                "96c58d9f.8bd83",
+                "73cf214f.a4fe3"
+            ]
+        ]
+    },
+    {
+        "id": "97e9430.30c09c",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "Temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 780,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "502a7bf0.79d8c4",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "Humidity",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "humidity",
+        "targetType": "msg",
+        "x": 770,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "96c58d9f.8bd83",
+        "type": "function",
+        "z": "ccf1c715.256028",
+        "name": "temperature",
+        "func": "msg.temperature = msg.payload\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 550,
+        "y": 220,
+        "wires": [
+            [
+                "97e9430.30c09c",
+                "c19ab50.cf3df48",
+                "ad324365.b3fee",
+                "29f401bc.7b6a9e",
+                "502a7bf0.79d8c4"
+            ]
+        ]
+    },
+    {
+        "id": "c19ab50.cf3df48",
+        "type": "ui_gauge",
+        "z": "ccf1c715.256028",
+        "name": "Gauge : Temperature",
+        "group": "3137a0.194ef86",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "",
+        "format": "{{value}} ℃",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 800,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "ad324365.b3fee",
+        "type": "ui_gauge",
+        "z": "ccf1c715.256028",
+        "name": "Level : Humidity",
+        "group": "efa9b4d4.68f728",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{humidity}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 780,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "bf72d21.d7ba03",
+        "type": "rpi-gpio in",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "pin": "12",
+        "intype": "tri",
+        "debounce": "25",
+        "read": false,
+        "x": 130,
+        "y": 600,
+        "wires": [
+            [
+                "8518afba.05fea"
+            ]
+        ]
+    },
+    {
+        "id": "64ca8c9a.0d6a54",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 750,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "8518afba.05fea",
+        "type": "function",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "func": "msg.payload = msg.payload;\n\nif(msg.payload == 1){\n    msg.payload = \"정상\";\n    return msg;\n}\nelse{\n    msg.payload = \"가스가스가스\";\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 600,
+        "wires": [
+            [
+                "64ca8c9a.0d6a54",
+                "bfc29fa7.5acaf",
+                "6c5db19f.69994"
+            ]
+        ]
+    },
+    {
+        "id": "bfc29fa7.5acaf",
+        "type": "ui_text",
+        "z": "ccf1c715.256028",
+        "group": "2077f9c2.9db846",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Gas Detector",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 750,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "6c5db19f.69994",
+        "type": "ui_toast",
+        "z": "ccf1c715.256028",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "",
+        "name": "",
+        "x": 750,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9b7399b9.95c3a8",
+        "type": "inject",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "30",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 840,
+        "wires": [
+            [
+                "21ba5c32.bf6e64"
+            ]
+        ]
+    },
+    {
+        "id": "21ba5c32.bf6e64",
+        "type": "python-function",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "func": "\"\"\"\n* PMS7003 데이터 수신 프로그램\n* 수정 : 2018. 11. 19\n* 제작 : eleparts 부설연구소\n* SW ver. 1.0.2\n\n> 관련자료\n파이썬 라이브러리\nhttps://docs.python.org/3/library/struct.html\n\n점프 투 파이썬\nhttps://wikidocs.net/book/1\n\nPMS7003 datasheet\nhttp://eleparts.co.kr/data/_gextends/good-pdf/201803/good-pdf-4208690-1.pdf\n\"\"\"\nimport serial\nimport struct\nimport time\n\n\nclass PMS7003(object):\n\n  # PMS7003 protocol data (HEADER 2byte + 30byte)\n  PMS_7003_PROTOCOL_SIZE = 32\n\n  # PMS7003 data list\n  HEADER_HIGH            = 0  # 0x42\n  HEADER_LOW             = 1  # 0x4d\n  FRAME_LENGTH           = 2  # 2x13+2(data+check bytes) \n  DUST_PM1_0_CF1         = 3  # PM1.0 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM2_5_CF1         = 4  # PM2.5 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM10_0_CF1        = 5  # PM10 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM1_0_ATM         = 6  # PM1.0 concentration unit μ g/m3（under atmospheric environment）\n  DUST_PM2_5_ATM         = 7  # PM2.5 concentration unit μ g/m3（under atmospheric environment）\n  DUST_PM10_0_ATM        = 8  # PM10 concentration unit μ g/m3  (under atmospheric environment) \n  DUST_AIR_0_3           = 9  # indicates the number of particles with diameter beyond 0.3 um in 0.1 L of air. \n  DUST_AIR_0_5           = 10 # indicates the number of particles with diameter beyond 0.5 um in 0.1 L of air. \n  DUST_AIR_1_0           = 11 # indicates the number of particles with diameter beyond 1.0 um in 0.1 L of air. \n  DUST_AIR_2_5           = 12 # indicates the number of particles with diameter beyond 2.5 um in 0.1 L of air. \n  DUST_AIR_5_0           = 13 # indicates the number of particles with diameter beyond 5.0 um in 0.1 L of air. \n  DUST_AIR_10_0          = 14 # indicates the number of particles with diameter beyond 10 um in 0.1 L of air. \n  RESERVEDF              = 15 # Data13 Reserved high 8 bits\n  RESERVEDB              = 16 # Data13 Reserved low 8 bits\n  CHECKSUM               = 17 # Checksum code\n\n\n  # header check \n  def header_chk(self, buffer):\n\n    if (buffer[self.HEADER_HIGH] == 66 and buffer[self.HEADER_LOW] == 77):\n      return True\n\n    else:\n      return True\n\n  # chksum value calculation\n  def chksum_cal(self, buffer):\n\n    buffer = buffer[0:self.PMS_7003_PROTOCOL_SIZE]\n\n    # data unpack (Byte -> Tuple (30 x unsigned char <B> + unsigned short <H>))\n    chksum_data = struct.unpack('!30BH', buffer)\n    \n    chksum = 0\n\n    for i in range(30):\n      chksum = chksum + chksum_data[i]\n\n    return chksum\n\n  # checksum check\n  def chksum_chk(self, buffer):   \n    \n    chk_result = self.chksum_cal(buffer)\n    \n    chksum_buffer = buffer[30:self.PMS_7003_PROTOCOL_SIZE]\n    chksum = struct.unpack('!H', chksum_buffer)\n    \n    if (chk_result == chksum[0]):\n      return True\n\n    else:\n      return False\n\n  # protocol size(small) check\n  def protocol_size_chk(self, buffer):\n\n    if(self.PMS_7003_PROTOCOL_SIZE <= len(buffer)):\n      return True\n\n    else:\n      return False\n\n  # protocol check\n  def protocol_chk(self, buffer):\n    \n    if(self.protocol_size_chk(buffer)):\n      \n      if(self.header_chk(buffer)):\n        \n        if(self.chksum_chk(buffer)):\n          \n          return True\n        else:\n          print(\"Chksum err\")\n      else:\n        print(\"Header err\")\n    else:\n      print(\"Protol err\")\n\n    return False \n\n  # unpack data \n  # <Tuple (13 x unsigned short <H> + 2 x unsigned char <B> + unsigned short <H>)>\n  def unpack_data(self, buffer):\n    \n    buffer = buffer[0:self.PMS_7003_PROTOCOL_SIZE]\n\n    # data unpack (Byte -> Tuple (13 x unsigned short <H> + 2 x unsigned char <B> + unsigned short <H>))\n    data = struct.unpack('!2B13H2BH', buffer)\n\n    return data\n\n\n  def print_serial(self, buffer):\n    \n    chksum = self.chksum_cal(buffer)\n    data = self.unpack_data(buffer)\n\n    print (\"============================================================================\")\n    print (\"Header : %c %c \\t\\t | Frame length : %s\" % (data[self.HEADER_HIGH], data[self.HEADER_LOW], data[self.FRAME_LENGTH]))\n    print (\"PM 1.0 (CF=1) : %s\\t | PM 1.0 : %s\" % (data[self.DUST_PM1_0_CF1], data[self.DUST_PM1_0_ATM]))\n    print (\"PM 2.5 (CF=1) : %s\\t | PM 2.5 : %s\" % (data[self.DUST_PM2_5_CF1], data[self.DUST_PM2_5_ATM]))\n    print (\"PM 10.0 (CF=1) : %s\\t | PM 10.0 : %s\" % (data[self.DUST_PM10_0_CF1], data[self.DUST_PM10_0_ATM]))\n    print (\"0.3um in 0.1L of air : %s\" % (data[self.DUST_AIR_0_3]))\n    print (\"0.5um in 0.1L of air : %s\" % (data[self.DUST_AIR_0_5]))\n    print (\"1.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_1_0]))\n    print (\"2.5um in 0.1L of air : %s\" % (data[self.DUST_AIR_2_5]))\n    print (\"5.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_5_0]))\n    print (\"10.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_10_0]))\n    print (\"Reserved F : %s | Reserved B : %s\" % (data[self.RESERVEDF],data[self.RESERVEDB]))\n    print (\"CHKSUM : %s | read CHKSUM : %s | CHKSUM result : %s\" % (chksum, data[self.CHECKSUM], chksum == data[self.CHECKSUM]))\n    print (\"============================================================================\")\n    msg = str(data[self.DUST_PM1_0_ATM])\n    msg1 = str(data[self.DUST_PM2_5_ATM])\n    msg2 = str(data[self.DUST_PM10_0_ATM])\n    return msg, msg1, msg2\n\n  \n# UART / USB Serial : 'dmesg | grep ttyUSB'\nUSB0 = '/dev/ttyUSB0'\nUART = '/dev/ttyAMA0'\n\n# USE PORT\nSERIAL_PORT = USB0\n\n# Baud Rate\nSpeed = 9600\n\n\n# example\nif __name__=='__main__':\n\n  #serial setting \n  ser = serial.Serial(SERIAL_PORT, Speed, timeout = 1)\n\n  dust = PMS7003()\n\n  while True:\n    \n    ser.flushInput()\n    buffer = ser.read(1024)\n\n    if(dust.protocol_chk(buffer)):\n    \n      print(\"DATA read success\")\n    \n      # print data\n      tryial={}\n      tryial['pm01'],tryial['pm05'],tryial['pm10'] = dust.print_serial(buffer)\n      return tryial\n      \n    else:\n\n      print(\"DATA read fail...\")     \n\n\n  ser.close()",
+        "outputs": 1,
+        "x": 350,
+        "y": 840,
+        "wires": [
+            [
+                "a458dfb7.d474",
+                "be24078c.3b2cb8",
+                "b9b11987.7fd5d8",
+                "68b1501.4f693b",
+                "76ce3715.401148",
+                "6f38eaa2.fd5dc4",
+                "73cf214f.a4fe3"
+            ]
+        ]
+    },
+    {
+        "id": "a458dfb7.d474",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "pm01",
+        "targetType": "msg",
+        "x": 750,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "b9b11987.7fd5d8",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "pm05",
+        "targetType": "msg",
+        "x": 750,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "76ce3715.401148",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "pm10",
+        "targetType": "msg",
+        "x": 750,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "be24078c.3b2cb8",
+        "type": "ui_text",
+        "z": "ccf1c715.256028",
+        "group": "dcc6282c.0e1d88",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "PM 0.1",
+        "format": "{{msg.pm01}}",
+        "layout": "row-spread",
+        "x": 740,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "68b1501.4f693b",
+        "type": "ui_text",
+        "z": "ccf1c715.256028",
+        "group": "dcc6282c.0e1d88",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "PM 0.5",
+        "format": "{{msg.pm05}}",
+        "layout": "row-spread",
+        "x": 740,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "6f38eaa2.fd5dc4",
+        "type": "ui_text",
+        "z": "ccf1c715.256028",
+        "group": "dcc6282c.0e1d88",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "PM 1.0",
+        "format": "{{msg.pm10}}",
+        "layout": "row-spread",
+        "x": 740,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "9459f042.70e6b",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "msg22",
+        "targetType": "msg",
+        "x": 1210,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "73cf214f.a4fe3",
+        "type": "function",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "func": "msg.msg11 = msg.payload\nmsg.msg22 = msg.humidity\nmsg.msg33 = msg.pm01\nmsg.msg44 = msg.pm05\nmsg.msg55 = msg.pm10\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 990,
+        "y": 480,
+        "wires": [
+            [
+                "9459f042.70e6b",
+                "d3fedd31.afb7d"
+            ]
+        ]
+    },
+    {
+        "id": "d3fedd31.afb7d",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "pm10",
+        "targetType": "msg",
+        "x": 1210,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "29f401bc.7b6a9e",
+        "type": "ui_chart",
+        "z": "ccf1c715.256028",
+        "name": "Graph : Temperature & Humidity",
+        "group": "3137a0.194ef86",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "label": "Temperature & Humidity",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "80",
+        "removeOlder": "12",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 830,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "42a74dee.83ae94",
+        "type": "comment",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "info": "상단: 온습도 센서를 이용, 온습도 표시\n중단: 가스검출 유무를 확인\n하단: PMS7003 센서를 이용 미세먼지 농도 표시",
+        "x": 120,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "3137a0.194ef86",
+        "type": "ui_group",
+        "z": "",
+        "name": "Temperature",
+        "tab": "5ae98618.3ef768",
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "efa9b4d4.68f728",
+        "type": "ui_group",
+        "z": "",
+        "name": "Humidity",
+        "tab": "5ae98618.3ef768",
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "2077f9c2.9db846",
+        "type": "ui_group",
+        "z": "",
+        "name": "DashBoard",
+        "tab": "aaf35b3a.f09708",
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "dcc6282c.0e1d88",
+        "type": "ui_group",
+        "z": "",
+        "name": "Find_dust",
+        "tab": "5ae98618.3ef768",
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "5ae98618.3ef768",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "aaf35b3a.f09708",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Gas",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
