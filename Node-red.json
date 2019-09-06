@@ -257,7 +257,7 @@
         "name": "",
         "func": "\"\"\"\n* PMS7003 데이터 수신 프로그램\n* 수정 : 2018. 11. 19\n* 제작 : eleparts 부설연구소\n* SW ver. 1.0.2\n\n> 관련자료\n파이썬 라이브러리\nhttps://docs.python.org/3/library/struct.html\n\n점프 투 파이썬\nhttps://wikidocs.net/book/1\n\nPMS7003 datasheet\nhttp://eleparts.co.kr/data/_gextends/good-pdf/201803/good-pdf-4208690-1.pdf\n\"\"\"\nimport serial\nimport struct\nimport time\n\n\nclass PMS7003(object):\n\n  # PMS7003 protocol data (HEADER 2byte + 30byte)\n  PMS_7003_PROTOCOL_SIZE = 32\n\n  # PMS7003 data list\n  HEADER_HIGH            = 0  # 0x42\n  HEADER_LOW             = 1  # 0x4d\n  FRAME_LENGTH           = 2  # 2x13+2(data+check bytes) \n  DUST_PM1_0_CF1         = 3  # PM1.0 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM2_5_CF1         = 4  # PM2.5 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM10_0_CF1        = 5  # PM10 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM1_0_ATM         = 6  # PM1.0 concentration unit μ g/m3（under atmospheric environment）\n  DUST_PM2_5_ATM         = 7  # PM2.5 concentration unit μ g/m3（under atmospheric environment）\n  DUST_PM10_0_ATM        = 8  # PM10 concentration unit μ g/m3  (under atmospheric environment) \n  DUST_AIR_0_3           = 9  # indicates the number of particles with diameter beyond 0.3 um in 0.1 L of air. \n  DUST_AIR_0_5           = 10 # indicates the number of particles with diameter beyond 0.5 um in 0.1 L of air. \n  DUST_AIR_1_0           = 11 # indicates the number of particles with diameter beyond 1.0 um in 0.1 L of air. \n  DUST_AIR_2_5           = 12 # indicates the number of particles with diameter beyond 2.5 um in 0.1 L of air. \n  DUST_AIR_5_0           = 13 # indicates the number of particles with diameter beyond 5.0 um in 0.1 L of air. \n  DUST_AIR_10_0          = 14 # indicates the number of particles with diameter beyond 10 um in 0.1 L of air. \n  RESERVEDF              = 15 # Data13 Reserved high 8 bits\n  RESERVEDB              = 16 # Data13 Reserved low 8 bits\n  CHECKSUM               = 17 # Checksum code\n\n\n  # header check \n  def header_chk(self, buffer):\n\n    if (buffer[self.HEADER_HIGH] == 66 and buffer[self.HEADER_LOW] == 77):\n      return True\n\n    else:\n      return True\n\n  # chksum value calculation\n  def chksum_cal(self, buffer):\n\n    buffer = buffer[0:self.PMS_7003_PROTOCOL_SIZE]\n\n    # data unpack (Byte -> Tuple (30 x unsigned char <B> + unsigned short <H>))\n    chksum_data = struct.unpack('!30BH', buffer)\n    \n    chksum = 0\n\n    for i in range(30):\n      chksum = chksum + chksum_data[i]\n\n    return chksum\n\n  # checksum check\n  def chksum_chk(self, buffer):   \n    \n    chk_result = self.chksum_cal(buffer)\n    \n    chksum_buffer = buffer[30:self.PMS_7003_PROTOCOL_SIZE]\n    chksum = struct.unpack('!H', chksum_buffer)\n    \n    if (chk_result == chksum[0]):\n      return True\n\n    else:\n      return False\n\n  # protocol size(small) check\n  def protocol_size_chk(self, buffer):\n\n    if(self.PMS_7003_PROTOCOL_SIZE <= len(buffer)):\n      return True\n\n    else:\n      return False\n\n  # protocol check\n  def protocol_chk(self, buffer):\n    \n    if(self.protocol_size_chk(buffer)):\n      \n      if(self.header_chk(buffer)):\n        \n        if(self.chksum_chk(buffer)):\n          \n          return True\n        else:\n          print(\"Chksum err\")\n      else:\n        print(\"Header err\")\n    else:\n      print(\"Protol err\")\n\n    return False \n\n  # unpack data \n  # <Tuple (13 x unsigned short <H> + 2 x unsigned char <B> + unsigned short <H>)>\n  def unpack_data(self, buffer):\n    \n    buffer = buffer[0:self.PMS_7003_PROTOCOL_SIZE]\n\n    # data unpack (Byte -> Tuple (13 x unsigned short <H> + 2 x unsigned char <B> + unsigned short <H>))\n    data = struct.unpack('!2B13H2BH', buffer)\n\n    return data\n\n\n  def print_serial(self, buffer):\n    \n    chksum = self.chksum_cal(buffer)\n    data = self.unpack_data(buffer)\n\n    print (\"============================================================================\")\n    print (\"Header : %c %c \\t\\t | Frame length : %s\" % (data[self.HEADER_HIGH], data[self.HEADER_LOW], data[self.FRAME_LENGTH]))\n    print (\"PM 1.0 (CF=1) : %s\\t | PM 1.0 : %s\" % (data[self.DUST_PM1_0_CF1], data[self.DUST_PM1_0_ATM]))\n    print (\"PM 2.5 (CF=1) : %s\\t | PM 2.5 : %s\" % (data[self.DUST_PM2_5_CF1], data[self.DUST_PM2_5_ATM]))\n    print (\"PM 10.0 (CF=1) : %s\\t | PM 10.0 : %s\" % (data[self.DUST_PM10_0_CF1], data[self.DUST_PM10_0_ATM]))\n    print (\"0.3um in 0.1L of air : %s\" % (data[self.DUST_AIR_0_3]))\n    print (\"0.5um in 0.1L of air : %s\" % (data[self.DUST_AIR_0_5]))\n    print (\"1.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_1_0]))\n    print (\"2.5um in 0.1L of air : %s\" % (data[self.DUST_AIR_2_5]))\n    print (\"5.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_5_0]))\n    print (\"10.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_10_0]))\n    print (\"Reserved F : %s | Reserved B : %s\" % (data[self.RESERVEDF],data[self.RESERVEDB]))\n    print (\"CHKSUM : %s | read CHKSUM : %s | CHKSUM result : %s\" % (chksum, data[self.CHECKSUM], chksum == data[self.CHECKSUM]))\n    print (\"============================================================================\")\n    msg = str(data[self.DUST_PM1_0_ATM])\n    msg1 = str(data[self.DUST_PM2_5_ATM])\n    msg2 = str(data[self.DUST_PM10_0_ATM])\n    return msg, msg1, msg2\n\n  \n# UART / USB Serial : 'dmesg | grep ttyUSB'\nUSB0 = '/dev/ttyUSB0'\nUART = '/dev/ttyAMA0'\n\n# USE PORT\nSERIAL_PORT = USB0\n\n# Baud Rate\nSpeed = 9600\n\n\n# example\nif __name__=='__main__':\n\n  #serial setting \n  ser = serial.Serial(SERIAL_PORT, Speed, timeout = 1)\n\n  dust = PMS7003()\n\n  while True:\n    \n    ser.flushInput()\n    buffer = ser.read(1024)\n\n    if(dust.protocol_chk(buffer)):\n    \n      print(\"DATA read success\")\n    \n      # print data\n      tryial={}\n      tryial['pm01'],tryial['pm05'],tryial['pm10'] = dust.print_serial(buffer)\n      return tryial\n      \n    else:\n\n      print(\"DATA read fail...\")     \n\n\n  ser.close()",
         "outputs": 1,
-        "x": 350,
+        "x": 410,
         "y": 840,
         "wires": [
             [
@@ -365,6 +365,56 @@
         "wires": []
     },
     {
+        "id": "99fe6673.d29828",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 790,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "845abc27.a3e95",
+        "type": "inject",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 1200,
+        "wires": [
+            [
+                "d0115d0c.b2f67"
+            ]
+        ]
+    },
+    {
+        "id": "d0115d0c.b2f67",
+        "type": "serial request",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "serial": "ab7a6c3f.4f1ab",
+        "x": 390,
+        "y": 1200,
+        "wires": [
+            [
+                "99fe6673.d29828",
+                "7c86e26a.12e4ec"
+            ]
+        ]
+    },
+    {
         "id": "9459f042.70e6b",
         "type": "debug",
         "z": "ccf1c715.256028",
@@ -454,14 +504,158 @@
         ]
     },
     {
-        "id": "42a74dee.83ae94",
-        "type": "comment",
+        "id": "28e18b50.15d064",
+        "type": "debug",
         "z": "ccf1c715.256028",
         "name": "",
-        "info": "상단: 온습도 센서를 이용, 온습도 표시\n중단: 가스검출 유무를 확인\n하단: PMS7003 센서를 이용 미세먼지 농도 표시",
-        "x": 120,
-        "y": 400,
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "longitude",
+        "targetType": "msg",
+        "x": 860,
+        "y": 1340,
         "wires": []
+    },
+    {
+        "id": "7c86e26a.12e4ec",
+        "type": "function",
+        "z": "ccf1c715.256028",
+        "name": "Split GPS info",
+        "func": "var beforeStr = msg.payload.split(',');\n//var result = new Array(3);\nif(beforeStr[0] == '$GPRMC'){\n    if(beforeStr[2] == 'A'){\n        msg.payload3 = beforeStr[3];    //위도\n        msg.payload4 = beforeStr[4];    //북위\n        msg.latitude = msg.payload4+msg.payload3; \n        msg.payload5 = beforeStr[5];    //경도\n        msg.payload6 = beforeStr[6];\n        msg.longitude = msg.payload6+msg.payload5;\n        \n        msg.result_gps = msg.latitude+','+msg.longitude\n        return msg;\n    }\n}\n\n\n//msg.payload = beforeStr[0];     //$GPRMC\n    //msg.payload1 = beforeStr[1];    //시간\n    //msg.payload2 = beforeStr[2];    //GPS신호의 신뢰도\n    //msg.payload3 = beforeStr[3];    //위도\n    //msg.payload4 = beforeStr[4];    //북위\n    //msg.payload5 = beforeStr[5];    //경도\n    //msg.payload6 = beforeStr[6];  //동경\n    //msg.payload7 = beforeStr[7];\n    //msg.payload8 = beforeStr[8];\n    //msg.payload9 = beforeStr[9];\n    //msg.payload10 = beforeStr[10];\n    //msg.payload11 = beforeStr[11];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 1260,
+        "wires": [
+            [
+                "f04cda8a.f87cc8",
+                "85eabf6a.c2b71",
+                "28e18b50.15d064"
+            ]
+        ]
+    },
+    {
+        "id": "f04cda8a.f87cc8",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "result_gps",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "result_gps",
+        "targetType": "msg",
+        "x": 850,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "85eabf6a.c2b71",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "latitude",
+        "targetType": "msg",
+        "x": 850,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "6a937e35.40368",
+        "type": "inject",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 1460,
+        "wires": [
+            [
+                "fc17fbc4.036208"
+            ]
+        ]
+    },
+    {
+        "id": "f769a35.2bdf96",
+        "type": "debug",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 870,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "fc17fbc4.036208",
+        "type": "function",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "func": "msg.method = 'POST'\nmsg.payload = { temperature: \"33\", humidity: \"66\", gas: \"1\", fine_dust: \"3\", machine_type: \"1\", machine_num: \"3\", gps: msg.result_gps };\nmsg.headers = {'content-type':'application/x-www-form-urlencoded'};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 470,
+        "y": 1580,
+        "wires": [
+            [
+                "1beeb6ec.163099"
+            ]
+        ]
+    },
+    {
+        "id": "1beeb6ec.163099",
+        "type": "http request",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "toojs.asuscomm.com:8099/data/node/uploadData/hello@naver.com",
+        "tls": "",
+        "proxy": "",
+        "authType": "",
+        "x": 670,
+        "y": 1460,
+        "wires": [
+            [
+                "f769a35.2bdf96"
+            ]
+        ]
+    },
+    {
+        "id": "5b664acb.a94304",
+        "type": "delay",
+        "z": "ccf1c715.256028",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 360,
+        "y": 1360,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "3137a0.194ef86",
@@ -502,6 +696,22 @@
         "disp": true,
         "width": "6",
         "collapse": false
+    },
+    {
+        "id": "ab7a6c3f.4f1ab",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "/dev/ttyAMA0",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
     },
     {
         "id": "5ae98618.3ef768",
