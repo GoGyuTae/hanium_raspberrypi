@@ -24,9 +24,10 @@ For further help, or general discussion, please use the [Node-RED Forum](https:/
 ## 온습도
 >**DHT22 Seonsor**를 통해 온도 및 습도를 받아와 표시, GUI 구현
 
-- 각 msg.payload, msg.humidity에 온습도 리턴
+- 각 msg.temperature, msg.humidity에 온습도 리턴
+- 초록색 pallette 들은 Debug용
 
-
+![dht22](/uploads/7fc4393058f14e4f5c434f05b8fa7d63/dht22.PNG)
 
 
 ## 미세먼지
@@ -34,8 +35,15 @@ For further help, or general discussion, please use the [Node-RED Forum](https:/
 
 - PMS7003 에는 Python code 사용
 
+![PMS7003](/uploads/253254cdb982d0f8c550a436eb2e65b5/PMS7003.PNG)
+
 ## 유해가스 검출
 > **MQ-2 Seonsor** 를 이용하여 **RaspberryPi 3B** PIN12 에서 검출유무를 알려준다.
 
+
+핀은 초기값(정상)이 1이지만 DB 를 통한 관리를 위해 기록되는 값은 아래와같이 변경
+
 - 유해가스 검출시 1
-- 유해가스 미검출시 2
+- 유해가스 미검출시 0
+
+![mq2](/uploads/e25d6dae5d91540645d64ec888407184/mq2.PNG)
