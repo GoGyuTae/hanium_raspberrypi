@@ -47,3 +47,37 @@ For further help, or general discussion, please use the [Node-RED Forum](https:/
 - 유해가스 미검출시 0
 
 ![mq2](/uploads/e25d6dae5d91540645d64ec888407184/mq2.PNG)
+
+## GPS 정보 수신
+> **NEO-6M**을 사용하여 GPS 정보를 받아온다.
+
+- 시리얼 통신(AMA01)을 이용
+- 다양한 GPS 수신 정보들 중에 **$GPRMC** 의 정보를 파싱하여 경도와 위도를 획득
+
+![gps](/uploads/57684ce1c54338d650f7dbcc617b14ed/gps.PNG)
+
+## DB 전송
+> 수집된 정보를 **API Server**를 통해 POST 방식으로 DB에 저장한다.
+
+- **타임스탬프**를 이용 DB로의 업로드 주기(시간) 설정가능
+- Node-RED 의 **HTTP Requset** 팔레트 사용
+- **flow.get** 을 거치며 각 센서의 값들을 가져온다.
+
+    - msg.temp :온도
+    - msg.humi : 습도
+    - msg.gas_result : 가스검출 유무
+    - msg.dust_pm10 : 미세먼지 PM10 의 수치
+    - msg.m_num : 각 라즈베리파이의 번호
+    - msg.g_result : 획득한 GPS 정보
+
+![post](/uploads/2e167f12d2dad63047ca9b05c2c0e6ad/post.PNG)
+
+POST를 위한 body문
+``` 
+msg.method = 'POST'
+msg.payload = { temperature: msg.temp, humidity: msg.humi, gas: msg.gas_result, fine_dust: msg.dust_pm10, machine_type: "0", machine_num: msg.m_num, gps: msg.g_result };
+msg.headers = {'content-type':'application/x-www-form-urlencoded'};
+return msg;
+```
+
+---
