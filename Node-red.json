@@ -1,111 +1,106 @@
 [
     {
-        "id": "ccf1c715.256028",
-        "type": "tab",
-        "label": "플로우 1",
-        "disabled": false,
-        "info": ""
-    },
-    {
-        "id": "a55377b4.7fab48",
+        "id": "a6581796.c6f7e8",
         "type": "inject",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "repeat": "60",
+        "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 150,
-        "y": 220,
+        "x": 140,
+        "y": 240,
         "wires": [
             [
-                "7d8d6e32.2637f"
+                "e36cf071.598ac",
+                "ab67da60.b54c48"
             ]
         ]
     },
     {
-        "id": "7d8d6e32.2637f",
+        "id": "e36cf071.598ac",
         "type": "rpi-dht22",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
-        "topic": "rpi-dht22",
+        "topic": "",
         "dht": 22,
         "pintype": "0",
         "pin": "17",
         "x": 360,
-        "y": 220,
+        "y": 240,
         "wires": [
             [
-                "96c58d9f.8bd83",
-                "73cf214f.a4fe3"
+                "5a53cadd.5deda4",
+                "594171a8.8bf"
             ]
         ]
     },
     {
-        "id": "97e9430.30c09c",
+        "id": "b1ed99ea.00cbb8",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "Temperature",
-        "active": true,
+        "active": false,
         "tosidebar": true,
-        "console": true,
+        "console": false,
         "tostatus": false,
-        "complete": "payload",
+        "complete": "temperature",
         "targetType": "msg",
-        "x": 780,
+        "x": 890,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "85e269af.407048",
+        "type": "debug",
+        "z": "10c478d2.988d37",
+        "name": "Humidity",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "humidity",
+        "targetType": "msg",
+        "x": 880,
         "y": 140,
         "wires": []
     },
     {
-        "id": "502a7bf0.79d8c4",
-        "type": "debug",
-        "z": "ccf1c715.256028",
-        "name": "Humidity",
-        "active": true,
-        "tosidebar": true,
-        "console": true,
-        "tostatus": false,
-        "complete": "humidity",
-        "targetType": "msg",
-        "x": 770,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "96c58d9f.8bd83",
+        "id": "5a53cadd.5deda4",
         "type": "function",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "temperature",
-        "func": "msg.temperature = msg.payload\nreturn msg;",
+        "func": "msg.topic = \"temperature\";\nmsg.temperature = msg.payload;\n\nflow.set(\"temp\", msg.temperature);\nflow.set(\"humi\", msg.humidity);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 550,
-        "y": 220,
+        "y": 240,
         "wires": [
             [
-                "97e9430.30c09c",
-                "c19ab50.cf3df48",
-                "ad324365.b3fee",
-                "29f401bc.7b6a9e",
-                "502a7bf0.79d8c4"
+                "b1ed99ea.00cbb8",
+                "5f7c46b6.fb3e58",
+                "85e269af.407048",
+                "251d5849.a27d48",
+                "43b1ccf0.b866a4",
+                "12116150.e34e3f"
             ]
         ]
     },
     {
-        "id": "c19ab50.cf3df48",
+        "id": "5f7c46b6.fb3e58",
         "type": "ui_gauge",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "Gauge : Temperature",
         "group": "3137a0.194ef86",
-        "order": 0,
+        "order": 2,
         "width": "0",
         "height": "0",
         "gtype": "gage",
-        "title": "Temperature",
-        "label": "",
+        "title": "<font size=6>Temperature",
+        "label": "DHT-22",
         "format": "{{value}} ℃",
         "min": 0,
         "max": "50",
@@ -116,23 +111,23 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 800,
-        "y": 240,
+        "x": 920,
+        "y": 200,
         "wires": []
     },
     {
-        "id": "ad324365.b3fee",
+        "id": "251d5849.a27d48",
         "type": "ui_gauge",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "Level : Humidity",
-        "group": "efa9b4d4.68f728",
-        "order": 1,
+        "group": "3137a0.194ef86",
+        "order": 4,
         "width": 0,
         "height": 0,
         "gtype": "wave",
-        "title": "Humidity",
+        "title": "<font size =6>Humidity",
         "label": "%",
-        "format": "{{humidity}}",
+        "format": "{{msg.humidity}}",
         "min": 0,
         "max": "100",
         "colors": [
@@ -142,139 +137,104 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 780,
-        "y": 320,
+        "x": 900,
+        "y": 260,
         "wires": []
     },
     {
-        "id": "bf72d21.d7ba03",
+        "id": "f5c9a91f.5b4c08",
         "type": "rpi-gpio in",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "pin": "12",
         "intype": "tri",
         "debounce": "25",
-        "read": false,
-        "x": 130,
-        "y": 600,
+        "read": true,
+        "x": 370,
+        "y": 1460,
         "wires": [
             [
-                "8518afba.05fea"
+                "c4c941f7.cd6ae"
             ]
         ]
     },
     {
-        "id": "64ca8c9a.0d6a54",
+        "id": "12c32b85.1ca1d4",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "x": 750,
-        "y": 600,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1010,
+        "y": 1440,
         "wires": []
     },
     {
-        "id": "8518afba.05fea",
+        "id": "aa9b2a9b.791bd8",
         "type": "function",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "func": "msg.payload = msg.payload;\n\nif(msg.payload == 1){\n    msg.payload = \"정상\";\n    return msg;\n}\nelse{\n    msg.payload = \"가스가스가스\";\n    return msg;\n}",
+        "z": "10c478d2.988d37",
+        "name": "gas detecor",
+        "func": "msg.topic = \"Gas Detector\"\nmsg.payload = msg.payload;\nflow.set(\"gas_result\", 0);\n//센서는 정상 = 1, 검출 = 0 우리는 검출 = 1, 정상 = 0\nif(msg.payload == '0'){\n    msg.message1 = \"유해가스가 검출되었습니다\";\n    flow.set(\"gas_result\", 1);\n}\nelse{\n    msg.message1 = \"정상입니다\";\n    //msg.payload = msg.message1;\n}\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 350,
-        "y": 600,
+        "x": 670,
+        "y": 1460,
         "wires": [
             [
-                "64ca8c9a.0d6a54",
-                "bfc29fa7.5acaf",
-                "6c5db19f.69994"
+                "2f33d72f.a7e088",
+                "f62d3625.2e8018",
+                "12c32b85.1ca1d4"
             ]
         ]
     },
     {
-        "id": "bfc29fa7.5acaf",
+        "id": "2f33d72f.a7e088",
         "type": "ui_text",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "group": "2077f9c2.9db846",
         "order": 2,
-        "width": 0,
-        "height": 0,
+        "width": "0",
+        "height": "0",
         "name": "",
         "label": "Gas Detector",
-        "format": "{{msg.payload}}",
-        "layout": "col-center",
-        "x": 750,
-        "y": 660,
+        "format": "{{msg.message1}}",
+        "layout": "row-spread",
+        "x": 1030,
+        "y": 1480,
         "wires": []
     },
     {
-        "id": "6c5db19f.69994",
-        "type": "ui_toast",
-        "z": "ccf1c715.256028",
-        "position": "dialog",
-        "displayTime": "3",
-        "highlight": "",
-        "outputs": 1,
-        "ok": "OK",
-        "cancel": "",
-        "topic": "",
-        "name": "",
-        "x": 750,
-        "y": 720,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "9b7399b9.95c3a8",
-        "type": "inject",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "30",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 840,
-        "wires": [
-            [
-                "21ba5c32.bf6e64"
-            ]
-        ]
-    },
-    {
-        "id": "21ba5c32.bf6e64",
+        "id": "ab67da60.b54c48",
         "type": "python-function",
-        "z": "ccf1c715.256028",
-        "name": "",
+        "z": "10c478d2.988d37",
+        "name": "PMS7003",
         "func": "\"\"\"\n* PMS7003 데이터 수신 프로그램\n* 수정 : 2018. 11. 19\n* 제작 : eleparts 부설연구소\n* SW ver. 1.0.2\n\n> 관련자료\n파이썬 라이브러리\nhttps://docs.python.org/3/library/struct.html\n\n점프 투 파이썬\nhttps://wikidocs.net/book/1\n\nPMS7003 datasheet\nhttp://eleparts.co.kr/data/_gextends/good-pdf/201803/good-pdf-4208690-1.pdf\n\"\"\"\nimport serial\nimport struct\nimport time\n\n\nclass PMS7003(object):\n\n  # PMS7003 protocol data (HEADER 2byte + 30byte)\n  PMS_7003_PROTOCOL_SIZE = 32\n\n  # PMS7003 data list\n  HEADER_HIGH            = 0  # 0x42\n  HEADER_LOW             = 1  # 0x4d\n  FRAME_LENGTH           = 2  # 2x13+2(data+check bytes) \n  DUST_PM1_0_CF1         = 3  # PM1.0 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM2_5_CF1         = 4  # PM2.5 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM10_0_CF1        = 5  # PM10 concentration unit μ g/m3（CF=1，standard particle）\n  DUST_PM1_0_ATM         = 6  # PM1.0 concentration unit μ g/m3（under atmospheric environment）\n  DUST_PM2_5_ATM         = 7  # PM2.5 concentration unit μ g/m3（under atmospheric environment）\n  DUST_PM10_0_ATM        = 8  # PM10 concentration unit μ g/m3  (under atmospheric environment) \n  DUST_AIR_0_3           = 9  # indicates the number of particles with diameter beyond 0.3 um in 0.1 L of air. \n  DUST_AIR_0_5           = 10 # indicates the number of particles with diameter beyond 0.5 um in 0.1 L of air. \n  DUST_AIR_1_0           = 11 # indicates the number of particles with diameter beyond 1.0 um in 0.1 L of air. \n  DUST_AIR_2_5           = 12 # indicates the number of particles with diameter beyond 2.5 um in 0.1 L of air. \n  DUST_AIR_5_0           = 13 # indicates the number of particles with diameter beyond 5.0 um in 0.1 L of air. \n  DUST_AIR_10_0          = 14 # indicates the number of particles with diameter beyond 10 um in 0.1 L of air. \n  RESERVEDF              = 15 # Data13 Reserved high 8 bits\n  RESERVEDB              = 16 # Data13 Reserved low 8 bits\n  CHECKSUM               = 17 # Checksum code\n\n\n  # header check \n  def header_chk(self, buffer):\n\n    if (buffer[self.HEADER_HIGH] == 66 and buffer[self.HEADER_LOW] == 77):\n      return True\n\n    else:\n      return True\n\n  # chksum value calculation\n  def chksum_cal(self, buffer):\n\n    buffer = buffer[0:self.PMS_7003_PROTOCOL_SIZE]\n\n    # data unpack (Byte -> Tuple (30 x unsigned char <B> + unsigned short <H>))\n    chksum_data = struct.unpack('!30BH', buffer)\n    \n    chksum = 0\n\n    for i in range(30):\n      chksum = chksum + chksum_data[i]\n\n    return chksum\n\n  # checksum check\n  def chksum_chk(self, buffer):   \n    \n    chk_result = self.chksum_cal(buffer)\n    \n    chksum_buffer = buffer[30:self.PMS_7003_PROTOCOL_SIZE]\n    chksum = struct.unpack('!H', chksum_buffer)\n    \n    if (chk_result == chksum[0]):\n      return True\n\n    else:\n      return False\n\n  # protocol size(small) check\n  def protocol_size_chk(self, buffer):\n\n    if(self.PMS_7003_PROTOCOL_SIZE <= len(buffer)):\n      return True\n\n    else:\n      return False\n\n  # protocol check\n  def protocol_chk(self, buffer):\n    \n    if(self.protocol_size_chk(buffer)):\n      \n      if(self.header_chk(buffer)):\n        \n        if(self.chksum_chk(buffer)):\n          \n          return True\n        else:\n          print(\"Chksum err\")\n      else:\n        print(\"Header err\")\n    else:\n      print(\"Protol err\")\n\n    return False \n\n  # unpack data \n  # <Tuple (13 x unsigned short <H> + 2 x unsigned char <B> + unsigned short <H>)>\n  def unpack_data(self, buffer):\n    \n    buffer = buffer[0:self.PMS_7003_PROTOCOL_SIZE]\n\n    # data unpack (Byte -> Tuple (13 x unsigned short <H> + 2 x unsigned char <B> + unsigned short <H>))\n    data = struct.unpack('!2B13H2BH', buffer)\n\n    return data\n\n\n  def print_serial(self, buffer):\n    \n    chksum = self.chksum_cal(buffer)\n    data = self.unpack_data(buffer)\n\n    print (\"============================================================================\")\n    print (\"Header : %c %c \\t\\t | Frame length : %s\" % (data[self.HEADER_HIGH], data[self.HEADER_LOW], data[self.FRAME_LENGTH]))\n    print (\"PM 1.0 (CF=1) : %s\\t | PM 1.0 : %s\" % (data[self.DUST_PM1_0_CF1], data[self.DUST_PM1_0_ATM]))\n    print (\"PM 2.5 (CF=1) : %s\\t | PM 2.5 : %s\" % (data[self.DUST_PM2_5_CF1], data[self.DUST_PM2_5_ATM]))\n    print (\"PM 10.0 (CF=1) : %s\\t | PM 10.0 : %s\" % (data[self.DUST_PM10_0_CF1], data[self.DUST_PM10_0_ATM]))\n    print (\"0.3um in 0.1L of air : %s\" % (data[self.DUST_AIR_0_3]))\n    print (\"0.5um in 0.1L of air : %s\" % (data[self.DUST_AIR_0_5]))\n    print (\"1.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_1_0]))\n    print (\"2.5um in 0.1L of air : %s\" % (data[self.DUST_AIR_2_5]))\n    print (\"5.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_5_0]))\n    print (\"10.0um in 0.1L of air : %s\" % (data[self.DUST_AIR_10_0]))\n    print (\"Reserved F : %s | Reserved B : %s\" % (data[self.RESERVEDF],data[self.RESERVEDB]))\n    print (\"CHKSUM : %s | read CHKSUM : %s | CHKSUM result : %s\" % (chksum, data[self.CHECKSUM], chksum == data[self.CHECKSUM]))\n    print (\"============================================================================\")\n    msg = str(data[self.DUST_PM1_0_ATM])\n    msg1 = str(data[self.DUST_PM2_5_ATM])\n    msg2 = str(data[self.DUST_PM10_0_ATM])\n    return msg, msg1, msg2\n\n  \n# UART / USB Serial : 'dmesg | grep ttyUSB'\nUSB0 = '/dev/ttyUSB0'\nUART = '/dev/ttyAMA0'\n\n# USE PORT\nSERIAL_PORT = USB0\n\n# Baud Rate\nSpeed = 9600\n\n\n# example\nif __name__=='__main__':\n\n  #serial setting \n  ser = serial.Serial(SERIAL_PORT, Speed, timeout = 1)\n\n  dust = PMS7003()\n\n  while True:\n    \n    ser.flushInput()\n    buffer = ser.read(1024)\n\n    if(dust.protocol_chk(buffer)):\n    \n      print(\"DATA read success\")\n    \n      # print data\n      tryial={}\n      tryial['pm01'],tryial['pm05'],tryial['pm10'] = dust.print_serial(buffer)\n      return tryial\n      \n    else:\n\n      print(\"DATA read fail...\")     \n\n\n  ser.close()",
         "outputs": 1,
-        "x": 410,
-        "y": 840,
+        "x": 360,
+        "y": 440,
         "wires": [
             [
-                "a458dfb7.d474",
-                "be24078c.3b2cb8",
-                "b9b11987.7fd5d8",
-                "68b1501.4f693b",
-                "76ce3715.401148",
-                "6f38eaa2.fd5dc4",
-                "73cf214f.a4fe3"
+                "af485e95.73a25",
+                "727e613c.6e4e2",
+                "670d005.b83cc",
+                "af18523.d720fb",
+                "e9fea081.a2f67",
+                "d2610ec.466b4f",
+                "14f80645.9ddaba",
+                "1a921720.188459",
+                "5e3faf1b.c067d",
+                "d76f8667.64d858"
             ]
         ]
     },
     {
-        "id": "a458dfb7.d474",
+        "id": "af485e95.73a25",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -282,14 +242,14 @@
         "tostatus": false,
         "complete": "pm01",
         "targetType": "msg",
-        "x": 750,
-        "y": 800,
+        "x": 1050,
+        "y": 440,
         "wires": []
     },
     {
-        "id": "b9b11987.7fd5d8",
+        "id": "670d005.b83cc",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -297,14 +257,14 @@
         "tostatus": false,
         "complete": "pm05",
         "targetType": "msg",
-        "x": 750,
-        "y": 920,
+        "x": 1050,
+        "y": 560,
         "wires": []
     },
     {
-        "id": "76ce3715.401148",
+        "id": "e9fea081.a2f67",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -312,62 +272,62 @@
         "tostatus": false,
         "complete": "pm10",
         "targetType": "msg",
-        "x": 750,
-        "y": 1020,
+        "x": 1050,
+        "y": 660,
         "wires": []
     },
     {
-        "id": "be24078c.3b2cb8",
+        "id": "727e613c.6e4e2",
         "type": "ui_text",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
+        "group": "dcc6282c.0e1d88",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "<font size=5> PM 0.1",
+        "format": "<font size=5>{{msg.pm01}}",
+        "layout": "row-spread",
+        "x": 1080,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "af18523.d720fb",
+        "type": "ui_text",
+        "z": "10c478d2.988d37",
+        "group": "dcc6282c.0e1d88",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "<font size=5>PM 0.5",
+        "format": "<font size=5>{{msg.pm05}}",
+        "layout": "row-spread",
+        "x": 1080,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "d2610ec.466b4f",
+        "type": "ui_text",
+        "z": "10c478d2.988d37",
         "group": "dcc6282c.0e1d88",
         "order": 3,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "PM 0.1",
-        "format": "{{msg.pm01}}",
+        "label": "<font size=5>PM 1.0",
+        "format": "<font size=5>{{msg.pm10}}",
         "layout": "row-spread",
-        "x": 740,
-        "y": 840,
+        "x": 1080,
+        "y": 700,
         "wires": []
     },
     {
-        "id": "68b1501.4f693b",
-        "type": "ui_text",
-        "z": "ccf1c715.256028",
-        "group": "dcc6282c.0e1d88",
-        "order": 4,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "PM 0.5",
-        "format": "{{msg.pm05}}",
-        "layout": "row-spread",
-        "x": 740,
-        "y": 960,
-        "wires": []
-    },
-    {
-        "id": "6f38eaa2.fd5dc4",
-        "type": "ui_text",
-        "z": "ccf1c715.256028",
-        "group": "dcc6282c.0e1d88",
-        "order": 5,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "PM 1.0",
-        "format": "{{msg.pm10}}",
-        "layout": "row-spread",
-        "x": 740,
-        "y": 1060,
-        "wires": []
-    },
-    {
-        "id": "99fe6673.d29828",
+        "id": "c6329d84.03e4a",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -375,111 +335,63 @@
         "tostatus": false,
         "complete": "payload",
         "targetType": "msg",
-        "x": 790,
-        "y": 1200,
+        "x": 830,
+        "y": 860,
         "wires": []
     },
     {
-        "id": "845abc27.a3e95",
+        "id": "9c4dccaf.15fb2",
         "type": "inject",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "repeat": "",
+        "repeat": "180",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 160,
-        "y": 1200,
+        "x": 150,
+        "y": 860,
         "wires": [
             [
-                "d0115d0c.b2f67"
+                "df4d270a.856948"
             ]
         ]
     },
     {
-        "id": "d0115d0c.b2f67",
+        "id": "df4d270a.856948",
         "type": "serial request",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "serial": "ab7a6c3f.4f1ab",
         "x": 390,
-        "y": 1200,
+        "y": 860,
         "wires": [
             [
-                "99fe6673.d29828",
-                "7c86e26a.12e4ec"
+                "3c7ab580.82439a"
             ]
         ]
     },
     {
-        "id": "9459f042.70e6b",
-        "type": "debug",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "msg22",
-        "targetType": "msg",
-        "x": 1210,
-        "y": 420,
-        "wires": []
-    },
-    {
-        "id": "73cf214f.a4fe3",
-        "type": "function",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "func": "msg.msg11 = msg.payload\nmsg.msg22 = msg.humidity\nmsg.msg33 = msg.pm01\nmsg.msg44 = msg.pm05\nmsg.msg55 = msg.pm10\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 990,
-        "y": 480,
-        "wires": [
-            [
-                "9459f042.70e6b",
-                "d3fedd31.afb7d"
-            ]
-        ]
-    },
-    {
-        "id": "d3fedd31.afb7d",
-        "type": "debug",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "pm10",
-        "targetType": "msg",
-        "x": 1210,
-        "y": 520,
-        "wires": []
-    },
-    {
-        "id": "29f401bc.7b6a9e",
+        "id": "12116150.e34e3f",
         "type": "ui_chart",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "Graph : Temperature & Humidity",
-        "group": "3137a0.194ef86",
-        "order": 1,
+        "group": "efa9b4d4.68f728",
+        "order": 4,
         "width": "0",
         "height": "0",
         "label": "Temperature & Humidity",
         "chartType": "line",
-        "legend": "true",
+        "legend": "false",
         "xformat": "HH:mm",
-        "interpolate": "linear",
+        "interpolate": "bezier",
         "nodata": "",
         "dot": false,
         "ymin": "0",
-        "ymax": "80",
-        "removeOlder": "12",
+        "ymax": "100",
+        "removeOlder": "3",
         "removeOlderPoints": "",
         "removeOlderUnit": "3600",
         "cutout": 0,
@@ -497,16 +409,16 @@
         ],
         "useOldStyle": false,
         "outputs": 1,
-        "x": 830,
-        "y": 280,
+        "x": 950,
+        "y": 320,
         "wires": [
             []
         ]
     },
     {
-        "id": "28e18b50.15d064",
+        "id": "91b4caea.7a4628",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -514,47 +426,48 @@
         "tostatus": false,
         "complete": "longitude",
         "targetType": "msg",
-        "x": 860,
-        "y": 1340,
+        "x": 840,
+        "y": 1000,
         "wires": []
     },
     {
-        "id": "7c86e26a.12e4ec",
+        "id": "3c7ab580.82439a",
         "type": "function",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "Split GPS info",
-        "func": "var beforeStr = msg.payload.split(',');\n//var result = new Array(3);\nif(beforeStr[0] == '$GPRMC'){\n    if(beforeStr[2] == 'A'){\n        msg.payload3 = beforeStr[3];    //위도\n        msg.payload4 = beforeStr[4];    //북위\n        msg.latitude = msg.payload4+msg.payload3; \n        msg.payload5 = beforeStr[5];    //경도\n        msg.payload6 = beforeStr[6];\n        msg.longitude = msg.payload6+msg.payload5;\n        \n        msg.result_gps = msg.latitude+','+msg.longitude\n        return msg;\n    }\n}\n\n\n//msg.payload = beforeStr[0];     //$GPRMC\n    //msg.payload1 = beforeStr[1];    //시간\n    //msg.payload2 = beforeStr[2];    //GPS신호의 신뢰도\n    //msg.payload3 = beforeStr[3];    //위도\n    //msg.payload4 = beforeStr[4];    //북위\n    //msg.payload5 = beforeStr[5];    //경도\n    //msg.payload6 = beforeStr[6];  //동경\n    //msg.payload7 = beforeStr[7];\n    //msg.payload8 = beforeStr[8];\n    //msg.payload9 = beforeStr[9];\n    //msg.payload10 = beforeStr[10];\n    //msg.payload11 = beforeStr[11];",
+        "func": "\nvar beforeStr = msg.payload.split(',');\n//var result = new Array(3);\nif(beforeStr[0] == '$GPRMC'){\n    if(beforeStr[2] == 'A'){\n        msg.payload = msg.payload;\n        msg.payload3 = beforeStr[3]/100;    //위도\n        msg.payload4 = beforeStr[4];    //북위\n        msg.latitude = msg.payload4+msg.payload3; \n        msg.payload5 = beforeStr[5]/100;    //경도\n        msg.payload6 = beforeStr[6];\n        msg.longitude = msg.payload6+msg.payload5;\n        \n        msg.result_gps = msg.latitude+','+msg.longitude\n        flow.set(\"g_result\", msg.result_gps);\n        return msg;\n    }\n}\n\n\n//msg.payload = beforeStr[0];     //$GPRMC\n    //msg.payload1 = beforeStr[1];    //시간\n    //msg.payload2 = beforeStr[2];    //GPS신호의 신뢰도\n    //msg.payload3 = beforeStr[3];    //위도\n    //msg.payload4 = beforeStr[4];    //북위\n    //msg.payload5 = beforeStr[5];    //경도\n    //msg.payload6 = beforeStr[6];  //동경\n    //msg.payload7 = beforeStr[7];\n    //msg.payload8 = beforeStr[8];\n    //msg.payload9 = beforeStr[9];\n    //msg.payload10 = beforeStr[10];\n    //msg.payload11 = beforeStr[11];",
         "outputs": 1,
         "noerr": 0,
-        "x": 570,
-        "y": 1260,
+        "x": 580,
+        "y": 920,
         "wires": [
             [
-                "f04cda8a.f87cc8",
-                "85eabf6a.c2b71",
-                "28e18b50.15d064"
+                "db4782ed.380fa",
+                "d17bce6c.bb98d",
+                "91b4caea.7a4628",
+                "c6329d84.03e4a"
             ]
         ]
     },
     {
-        "id": "f04cda8a.f87cc8",
+        "id": "db4782ed.380fa",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "result_gps",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "result_gps",
         "targetType": "msg",
-        "x": 850,
-        "y": 1300,
+        "x": 830,
+        "y": 960,
         "wires": []
     },
     {
-        "id": "85eabf6a.c2b71",
+        "id": "d17bce6c.bb98d",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -562,64 +475,44 @@
         "tostatus": false,
         "complete": "latitude",
         "targetType": "msg",
-        "x": 850,
-        "y": 1260,
+        "x": 830,
+        "y": 920,
         "wires": []
     },
     {
-        "id": "6a937e35.40368",
-        "type": "inject",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 160,
-        "y": 1460,
-        "wires": [
-            [
-                "fc17fbc4.036208"
-            ]
-        ]
-    },
-    {
-        "id": "f769a35.2bdf96",
+        "id": "8d5937f6.219918",
         "type": "debug",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "false",
-        "x": 870,
-        "y": 1460,
+        "x": 1130,
+        "y": 1180,
         "wires": []
     },
     {
-        "id": "fc17fbc4.036208",
+        "id": "32b5a232.ffc12e",
         "type": "function",
-        "z": "ccf1c715.256028",
-        "name": "",
-        "func": "msg.method = 'POST'\nmsg.payload = { temperature: \"33\", humidity: \"66\", gas: \"1\", fine_dust: \"3\", machine_type: \"1\", machine_num: \"3\", gps: msg.result_gps };\nmsg.headers = {'content-type':'application/x-www-form-urlencoded'};\nreturn msg;",
+        "z": "10c478d2.988d37",
+        "name": "body",
+        "func": "msg.method = 'POST'\nmsg.payload = { temperature: msg.temp, humidity: msg.humi, gas: msg.gas_result, fine_dust: msg.dust_pm10, machine_type: \"0\", machine_num: msg.m_num, gps: msg.g_result };\nmsg.headers = {'content-type':'application/x-www-form-urlencoded'};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 470,
-        "y": 1580,
+        "x": 650,
+        "y": 1180,
         "wires": [
             [
-                "1beeb6ec.163099"
+                "a64336c.078e6c8"
             ]
         ]
     },
     {
-        "id": "1beeb6ec.163099",
+        "id": "a64336c.078e6c8",
         "type": "http request",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "method": "use",
         "ret": "txt",
@@ -628,21 +521,52 @@
         "tls": "",
         "proxy": "",
         "authType": "",
-        "x": 670,
-        "y": 1460,
+        "x": 850,
+        "y": 1180,
         "wires": [
             [
-                "f769a35.2bdf96"
+                "8d5937f6.219918"
             ]
         ]
     },
     {
-        "id": "5b664acb.a94304",
+        "id": "43b1ccf0.b866a4",
+        "type": "debug",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 870,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "f62d3625.2e8018",
+        "type": "ui_toast",
+        "z": "10c478d2.988d37",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "",
+        "name": "",
+        "x": 1050,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "c4c941f7.cd6ae",
         "type": "delay",
-        "z": "ccf1c715.256028",
+        "z": "10c478d2.988d37",
         "name": "",
         "pauseType": "delay",
-        "timeout": "5",
+        "timeout": "1",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -651,8 +575,288 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 360,
-        "y": 1360,
+        "x": 500,
+        "y": 1460,
+        "wires": [
+            [
+                "aa9b2a9b.791bd8"
+            ]
+        ]
+    },
+    {
+        "id": "ec03e2bc.91822",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "flow.get",
+        "func": "var num = Math.floor(Math.random() * 3) + 1;\nmsg.m_num = num;\n\nmsg.temp = flow.get(\"temp\");\nmsg.humi = flow.get(\"humi\");\nmsg.dust_pm10 = flow.get(\"dust_pm10\");\nmsg.g_result = flow.get(\"g_result\");\nmsg.gas_result = flow.get(\"gas_result\");\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 1320,
+        "wires": [
+            [
+                "6c8b59dc.d193a8",
+                "32b5a232.ffc12e"
+            ]
+        ]
+    },
+    {
+        "id": "6c8b59dc.d193a8",
+        "type": "debug",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1010,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "73cc45ba.e90e0c",
+        "type": "inject",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1320,
+        "wires": [
+            [
+                "ec03e2bc.91822"
+            ]
+        ]
+    },
+    {
+        "id": "14f80645.9ddaba",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "flow.set dust_pm10",
+        "func": "flow.set(\"dust_pm10\", msg.pm10);\n\n\n\n\n{topic=\"temperature\", payload=22}\n{topic=\"humidity\", payload=66}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c865c0e0.410d3",
+        "type": "http request",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "http://toojs.asuscomm.com:8099/data/node/getData/hello@naver.com?getSensorData=3&machine_type=1&machine_num=2",
+        "tls": "",
+        "proxy": "",
+        "authType": "",
+        "x": 430,
+        "y": 1640,
+        "wires": [
+            [
+                "15acb62d.040f6a"
+            ]
+        ]
+    },
+    {
+        "id": "88297556.838dc8",
+        "type": "debug",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1010,
+        "y": 1640,
+        "wires": []
+    },
+    {
+        "id": "c010bf53.bd36f",
+        "type": "inject",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1640,
+        "wires": [
+            [
+                "c865c0e0.410d3"
+            ]
+        ]
+    },
+    {
+        "id": "594171a8.8bf",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "humidity",
+        "func": "msg.topic = \"humidity\";\nmsg.payload = msg.humidity;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 540,
+        "y": 300,
+        "wires": [
+            [
+                "12116150.e34e3f"
+            ]
+        ]
+    },
+    {
+        "id": "1a921720.188459",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "PM 0.1",
+        "func": "msg.topic = \"PM 0.1\";\nmsg.payload = msg.pm01;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 620,
+        "wires": [
+            [
+                "f342250f.a94c48"
+            ]
+        ]
+    },
+    {
+        "id": "5e3faf1b.c067d",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "PM 0.5",
+        "func": "msg.topic = \"PM 0.5\";\nmsg.payload = msg.pm05;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 660,
+        "wires": [
+            [
+                "f342250f.a94c48"
+            ]
+        ]
+    },
+    {
+        "id": "d76f8667.64d858",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "PM 1.0",
+        "func": "msg.topic = \"PM 1.0\";\nmsg.payload = msg.pm10;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 700,
+        "wires": [
+            [
+                "f342250f.a94c48"
+            ]
+        ]
+    },
+    {
+        "id": "f342250f.a94c48",
+        "type": "ui_chart",
+        "z": "10c478d2.988d37",
+        "name": "Dust_Chart",
+        "group": "dcc6282c.0e1d88",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "label": "",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 770,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "76ae9e54.a8fa7",
+        "type": "function",
+        "z": "10c478d2.988d37",
+        "name": "JSON Parse",
+        "func": "p = JSON.parse(msg.payload);\n\nmsg.payload = p[0].id;\n//msg.payload = p[0].user.id;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 850,
+        "y": 1640,
+        "wires": [
+            [
+                "88297556.838dc8"
+            ]
+        ]
+    },
+    {
+        "id": "15acb62d.040f6a",
+        "type": "json",
+        "z": "10c478d2.988d37",
+        "name": "",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 650,
+        "y": 1640,
+        "wires": [
+            [
+                "76ae9e54.a8fa7"
+            ]
+        ]
+    },
+    {
+        "id": "48322dad.cccc54",
+        "type": "ui_template",
+        "z": "10c478d2.988d37",
+        "group": "8ab5df68.0e11f",
+        "name": "Clock Toolbar",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "format": "<script id=\"titleScript\" type=\"text/javascript\">\n\n$(function() {\n    if($('.md-toolbar-tools').length != 0){\n        loadClock();\n    }else setTimeout(loadClock, 500)\n});\n\nfunction loadClock(){\n    $('#clock').remove();\n    var toolbar = $('.md-toolbar-tools');\n    \n    var div = $('<div/>');\n    var p = $('<p/ id=\"clock\">');\n    \n    div.append(p);\n    div[0].style.margin = '5px 5px 5px auto';\n    toolbar.append(div);\n\n    function displayTitle(lh) {\n        p.text(lh); \n    }\n    \n    function upTime() {\n        var d = new Date();\n        p.text(d.toLocaleString());\n    }\n\n    if(document.clockInterval){ \n            clearInterval(document.clockInterval);\n            document.clockInterval = null;\n    }\n        \n    document.clockInterval = setInterval(upTime,1000);\n}\n\n</script>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "templateScope": "global",
+        "x": 140,
+        "y": 60,
         "wires": [
             []
         ]
@@ -661,19 +865,10 @@
         "id": "3137a0.194ef86",
         "type": "ui_group",
         "z": "",
-        "name": "Temperature",
+        "name": "Temperature&Humidity",
         "tab": "5ae98618.3ef768",
-        "disp": true,
-        "width": "6",
-        "collapse": false
-    },
-    {
-        "id": "efa9b4d4.68f728",
-        "type": "ui_group",
-        "z": "",
-        "name": "Humidity",
-        "tab": "5ae98618.3ef768",
-        "disp": true,
+        "order": 1,
+        "disp": false,
         "width": "6",
         "collapse": false
     },
@@ -681,8 +876,9 @@
         "id": "2077f9c2.9db846",
         "type": "ui_group",
         "z": "",
-        "name": "DashBoard",
-        "tab": "aaf35b3a.f09708",
+        "name": "GasDector",
+        "tab": "5ae98618.3ef768",
+        "order": 4,
         "disp": true,
         "width": "6",
         "collapse": false
@@ -691,10 +887,11 @@
         "id": "dcc6282c.0e1d88",
         "type": "ui_group",
         "z": "",
-        "name": "Find_dust",
+        "name": "FINE_DUST",
         "tab": "5ae98618.3ef768",
+        "order": 2,
         "disp": true,
-        "width": "6",
+        "width": "8",
         "collapse": false
     },
     {
@@ -714,20 +911,43 @@
         "responsetimeout": "10000"
     },
     {
+        "id": "efa9b4d4.68f728",
+        "type": "ui_group",
+        "z": "",
+        "name": "Graph",
+        "tab": "5ae98618.3ef768",
+        "order": 3,
+        "disp": true,
+        "width": "8",
+        "collapse": true
+    },
+    {
+        "id": "8ab5df68.0e11f",
+        "type": "ui_group",
+        "z": "",
+        "name": "hidden_group",
+        "tab": "d8dbea59.da7b78",
+        "disp": false,
+        "width": "6",
+        "collapse": false
+    },
+    {
         "id": "5ae98618.3ef768",
         "type": "ui_tab",
         "z": "",
         "name": "Home",
         "icon": "dashboard",
+        "order": 1,
         "disabled": false,
         "hidden": false
     },
     {
-        "id": "aaf35b3a.f09708",
+        "id": "d8dbea59.da7b78",
         "type": "ui_tab",
         "z": "",
-        "name": "Gas",
-        "icon": "dashboard",
+        "name": "Zooland Sys",
+        "icon": "home",
+        "order": 1,
         "disabled": false,
         "hidden": false
     }
