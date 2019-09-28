@@ -89,7 +89,7 @@ return msg;
 
 ![DBupload](/uploads/1b0bb802c76a4370d58867d449049ee8/DBupload.PNG)
 
-> 가져온 Arduino에서 수집된 센서값들 표현
+> DB에서 Arduino 가 수집한 센서값 알아보기
 
 ![arduinoget2](/uploads/7cf8d7a6091474b023f5da87670001d4/arduinoget2.PNG)
 
