@@ -88,3 +88,11 @@ return msg;
 - 이후 가져온 정보들을 **JSON 형식**으로 변환, **파싱**하여 사용한다.
 
 ![DBupload](/uploads/1b0bb802c76a4370d58867d449049ee8/DBupload.PNG)
+
+> 가져온 Arduino에서 수집된 센서값들 표현
+
+![arduinoget2](/uploads/7cf8d7a6091474b023f5da87670001d4/arduinoget2.PNG)
+
+### 측정된 데이터들을 볼 수 있게 한 대시보드
+
+![dashboard2](/uploads/a88befe09b27f4a4dd76d6d3e2cb752a/dashboard2.png)
